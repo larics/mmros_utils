@@ -1,2 +1,2 @@
 Header header
-DetectedObject[] objects
+DetectedCentroid[] objects
