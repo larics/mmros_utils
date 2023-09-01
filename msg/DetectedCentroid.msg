@@ -1,4 +1,4 @@
-uint8 px
-uint8 py
+int32 px
+int32 py
 uint8 id 
 
