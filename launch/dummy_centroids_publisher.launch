@@ -1,0 +1,3 @@
+<launch>
+  <node name="dummy_centroid_publisher" pkg="mmros_utils" type="dummy_centroids_publisher.py" output="screen"/>
+</launch>

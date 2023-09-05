@@ -11,6 +11,7 @@ find_package(catkin REQUIRED
              roscpp
              rospy
              std_msgs
+             geometry_msgs
              message_generation
 )
 
@@ -51,7 +52,9 @@ find_package(catkin REQUIRED
 add_message_files(
    FILES
    DetectedCentroid.msg
+   CentroidPoseEstimate.msg
    DetectedCentroidArray.msg
+   CentroidPoseEstimateArray.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -72,6 +75,7 @@ add_message_files(
 generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
 )
 
 ################################################
@@ -106,7 +110,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES mmros_utils
-  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs
 #  DEPENDS system_lib
 )
 

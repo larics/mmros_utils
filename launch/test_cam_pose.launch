@@ -1,0 +1,7 @@
+<launch>
+  <!-- Include the launch file for the Dummy Centroid Publisher Node -->
+  <include file="$(find mmros_utils)/launch/dummy_centroids_publisher.launch"/>
+
+  <!-- Include the launch file for the Target Pose Estimator Node -->
+  <include file="$(find mmros_utils)/launch/target_pose_estimator.launch"/>
+</launch>

@@ -1,0 +1,5 @@
+<launch>
+  <node name="target_pose_estimator" pkg="mmros_utils" type="target_pose_estimator.py" output="screen">
+    <remap from="detected_objects" to="detected_objects"/>
+  </node>
+</launch>
