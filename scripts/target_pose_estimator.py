@@ -12,9 +12,19 @@ class TargetPoseEstimator:
         self.detected_centroids = []
         self.detected_obj_sub = rospy.Subscriber('detected_objects', DetectedCentroidArray, self.detected_objects_cb)
         self.depth_sub = rospy.Subscriber("camera/depth_registered/points", PointCloud2, self.dpth_points_cb)
+        self.uav_pose_sub = rospy.Subscriber('/falconsilver/vrpn_client/estimated_odometry', Odometry, self.uav_pose_cb)  
         self.pose_pub = rospy.Publisher("detected_poses", CentroidPoseEstimateArray)
         self.detected_centroids_reciv = False
         self.dpth_reciv = False
+        
+        # TODO: Create transformations 
+        self.T_world_uav = None # TODO: that's from the 
+        self.T_cam_camr = self.getRotXT(pitch_angle)
+        self.T_uav_cam = np.array([[0, -1, 0, 0], 
+                                   [0, 0, -1, 0], 
+                                   [1, 0, 0, 0], 
+                                   [0, 0, 0, 1]])
+        self.T_complete = np.matmul(self.T_uav_cam, self.cam_camr)
 
     def detected_objects_cb(self, data):
         # Clear the previously detected centroids
@@ -42,6 +52,40 @@ class TargetPoseEstimator:
             return 1000.0
         else: 
             return float(val)
+            
+    def getRotXT(self, angle): 
+        
+        return np.array([[1, 0, 0, 0], 
+                         [0, np.cos(angle), np.sin(angle), 0], 
+                         [0, np.sin(angle), np.cos(angle), 0], 
+                         [0, 0, 0, 1]]
+                         
+    def createCPArray(self, transform=None`tea):
+        
+        cp_array = CentroidPoseEstimateArray()
+        for i, axis in enumerate('xyz'): 
+            gen_dpths = self.get_depths(self.pcl, self.detected_centroids, axis='{}'.format(axis))
+            # Assign values for each of the detected points
+            if axis == 'x':
+                for kx, x in enumerate(gen_dpths): 
+                    cp_array.poses.append(CentroidPoseEstimate())
+                    cp_array.poses[kx].pose.x = self.check_nan(x[0])
+            if axis == 'y':
+                for ky, y in enumerate(gen_dpths): 
+                    cp_array.poses[ky].pose.y = self.check_nan(y[0])
+            if axis == 'z': 
+                for kz,z in enumerate(gen_dpths): 
+                    cp_array.poses[kz].pose.z = self.check_nan(z[0])
+                    
+            if transform: 
+                
+                for i, pose in enumerate(cp_array.poses):
+                    
+                    p = np.array([pose.x, pose.y, pose.z, 1])
+                    p_new = np.matmul(T, p) 
+                    
+        
+        
 
     def run(self):
         rate = rospy.Rate(10)  # Update rate, adjust as needed
